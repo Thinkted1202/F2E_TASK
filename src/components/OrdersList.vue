@@ -1,11 +1,11 @@
 <template>
 <div>
 	<ul>
-		<li class="orders" v-for="(order, key) in orders_list" v-bind:key="order.key">
-			<div><i>|</i>{{order.type}}</div>
-			<ul class="orders_list"  :class="order.class_name">
-				<li v-for="item in order.content" v-bind:key="item.class_name">
-					<img  :src="item.logo" :alt="item.name" />
+		<li class="orders" v-for="(order, key) in orders_list" v-bind:key="key">
+			<div><i>|</i>{{origin_orders[key].type}}</div>
+			<ul class="orders_list"  :class="origin_orders[key].class_name">
+				<li v-for="item in order" v-bind:key="item.class_name">
+					<img  :src="item.logo" :alt="item.name"/>
 					<div class="content" >
 						<div class="out_flex">
 							<div class="status">{{item.status.type}}</div>
@@ -26,24 +26,23 @@ export default {
 	name: "OrdersList",
 	data:function(){
 		return 	{
-			orders:[
+			origin_orders:[
 					{
 						type:'進行中',
-						class_name:'active',
-						content :''
+						class_name:'active'
 					},{
 						type:'已完成',
-						class_name:'complete',
-						content :''
+						class_name:'complete'
 					}
 				]
 			}
 	},
 	computed:{
 		orders_list:function(){
-			this.orders[0].content = this.$store.getters.getSortByDate('getActiveList')
-			this.orders[1].content = this.$store.getters.getSortByDate('getCompleteList')
-			return this.orders
+			return [
+				this.$store.getters.getSortByDate('getActiveList'),
+				this.$store.getters.getSortByDate('getCompleteList')
+			]
 		}
 	}
 };
@@ -88,7 +87,7 @@ export default {
 		padding:20px;
 	}
 
-	ul.orders_list > li > * {
+	ul.orders_list > li > div {
 		padding: 10px 10px;
 	}
 
@@ -96,7 +95,7 @@ export default {
 		width:100%;
 	}
 
-	ul.orders_list > li > img{
+	ul.orders_list > li img{
 		width:100px;
 		height:100px;
 	}
